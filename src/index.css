@@ -1,1 +1,33 @@
 @import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap");
+
+/* Global font */
+* {
+  font-family: "Poppins", sans-serif;
+}
+html {
+  scroll-behavior: smooth;
+}
+
+@theme {
+  /* Custom color */
+  --color-primary: #8245ec;
+
+  /* Custom keyframes */
+  @keyframes blob {
+    0% {
+      transform: scale(1);
+    }
+    33% {
+      transform: scale(1.2);
+    }
+    66% {
+      transform: scale(0.8);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  --animate-blob: blob 10s infinite ease-in-out;
+}
