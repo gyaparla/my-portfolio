@@ -1,19 +1,9 @@
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100..900&display=swap");
-
-/* Global font */
-* {
-  font-family: "Poppins", sans-serif;
-}
-html {
-  scroll-behavior: smooth;
-}
+@import "tailwindcss";
 
 @theme {
-  /* Custom color */
   --color-primary: #8245ec;
 
-  /* Custom keyframes */
   @keyframes blob {
     0% {
       transform: scale(1);
@@ -30,4 +20,24 @@ html {
   }
 
   --animate-blob: blob 10s infinite ease-in-out;
+
+  --background-image-skills-gradient: linear-gradient(
+      38.73deg,
+      rgba(204, 0, 187, 0.15) 0%,
+      rgba(201, 32, 184, 0) 50%
+    ),
+    linear-gradient(
+      141.27deg,
+      rgba(0, 70, 209, 0) 50%,
+      rgba(0, 70, 209, 0.15) 100%
+    );
+}
+
+/* Global font */
+* {
+  font-family: "Poppins", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
 }
