@@ -7,7 +7,7 @@ const Skills = () => {
   return (
     <section
       id="skills"
-      className="py-24 pb-24 px-[12vw] md:px-[7vw] lg:px-[20vw] font-sans bg-skills-gradient"
+      className="py-24 pb-24 px-[12vw] md:px-[7vw] lg:px-[20vw] font-sans bg-skills-gradient clip-path-custom"
     >
       <Title name={"SKILLS"} description={"A collection of skills"} />
       <div className="flex flex-wrap gap-1 lg:gap-5 py-10 justify-between">

@@ -22,6 +22,11 @@ function App() {
         <Navbar />
         <About/>
         <Skills/>
+        <Experience/>
+        {/* <Work/> */}
+        {/* <Education/> */}
+        <Contact/>
+        <Footer/>
       </div>
     </div>
   );
