@@ -24,7 +24,14 @@ const About = () => {
             <span className="text-white">
               I am a&nbsp;
               <TypeAnimation
-                sequence={["Fullstack Developer", 2000, "App Developer", 2000]}
+                sequence={[
+                "Frontend Developer",
+                2000,
+                "React Developer",
+                2000,
+                "UI Developer",
+                2000,
+              ]}
                 speed={50}
                 repeat={Infinity}
                 cursor={true}
