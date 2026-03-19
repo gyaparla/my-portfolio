@@ -1,12 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-const Timeline = ({ items }) => {
+const Timeline = ({
+  items,
+  renderItem,
+  layout = "horizontal",
+  overlap = 0,
+  onItemClick,
+}) => {
+  const containerRef = useRef(null);
+
   // Mount to trigger animations
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
     const id = requestAnimationFrame(() => setMounted(true));
     return () => cancelAnimationFrame(id);
   }, []);
+
+  const onWheel = (e) => {
+    if (layout === "horizontal" && containerRef.current) {
+      e.preventDefault();
+      containerRef.current.scrollLeft += e.deltaY;
+    }
+  };
 
   // Make item delays scale with item count & line duration
   const lineDuration = 6000;
@@ -15,85 +30,106 @@ const Timeline = ({ items }) => {
     : 600;
   const baseDelay = 400;
 
+  const isHorizontal = layout === "horizontal";
+
+  const renderDefaultItem = (item, idx, isLeft, delay) => (
+    <div
+      role={onItemClick ? "button" : undefined}
+      tabIndex={onItemClick ? 0 : undefined}
+      onClick={onItemClick ? () => onItemClick(item) : undefined}
+      onKeyDown={
+        onItemClick
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") onItemClick(item);
+            }
+          : undefined
+      }
+      className={`snap-start w-full sm:w-[430px] p-6 rounded-3xl border border-white/10 bg-gray-900/50 backdrop-blur-xl shadow-[0_20px_35px_rgba(0,0,0,0.3)] ${
+        isHorizontal ? "min-w-[320px]" : isLeft ? "sm:ml-0" : "sm:mr-0"
+      } md:ml-10 md:mr-10 transform transition duration-300 hover:-translate-y-1 hover:bg-white/10 ${
+        onItemClick ? "cursor-pointer" : ""
+      }`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h2 className="text-lg sm:text-xl font-semibold text-white">
+            {item.company || item.school}
+          </h2>
+          <p className="text-sm text-gray-300">{item.role || item.degree}</p>
+        </div>
+        <span className="text-xs text-gray-400">{item.date}</span>
+      </div>
+
+      <p className="mt-4 text-gray-300 text-sm line-clamp-3">{item.desc}</p>
+
+      {item.skills && (
+        <div className="mt-4">
+          <h5 className="text-sm font-medium text-gray-200">Skills</h5>
+          <ul className="flex flex-wrap gap-2 mt-2">
+            {item.skills.map((skill, index) => (
+              <li
+                key={index}
+                className="px-3 py-1 text-xs text-gray-200 rounded-full bg-white/10"
+              >
+                {skill}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  );
+
+  const itemRenderer = renderItem ?? renderDefaultItem;
+
   return (
     <section className="relative mx-auto my-24 max-w-[1200px] px-4">
-      {/* Vertical timeline line (animated with scaleY) */}
       <div
-        className={[
-          "pointer-events-none absolute top-0 bottom-0 w-[6px] bg-white",
-          "origin-top transition-transform duration-[6000ms] ease-linear z-0",
-          mounted ? "scale-y-100" : "scale-y-0",
-          "left-[31px] lg:left-1/2 lg:-translate-x-1/2",
-        ].join(" ")}
-      />
-
-      <div className="relative z-10">
+        ref={containerRef}
+        onWheel={onWheel}
+        className={
+          (isHorizontal
+            ? "relative flex w-full items-end overflow-x-auto pb-12 scroll-smooth snap-x snap-mandatory pl-10 pr-10 hide-scrollbar"
+            : "relative z-10") +
+          (mounted ? " opacity-100" : " opacity-0") +
+          " transition-opacity duration-500"
+        }
+      >
         {items.map((item, idx) => {
           const isLeft = idx % 2 === 0;
           const delay = baseDelay + idx * step;
 
           return (
             <div
-              key={`${item.company}-${idx}`}
-              className={[
-                "relative w-full py-2 bg-gray",
-                "lg:w-1/2",
-                isLeft ? "lg:pr-16" : "lg:pl-16 lg:ml-auto",
-                "pl-[80px] pr-6 lg:px-0",
-              ].join(" ")}
+              key={`${item.company || item.school}-${idx}`}
+              className={
+                isHorizontal
+                  ? "flex-shrink-0 snap-start relative"
+                  : `flex flex-col sm:flex-row items-center mb-16 ${
+                      isLeft ? "sm:justify-start" : "sm:justify-end"
+                    }`
+              }
+              style={
+                isHorizontal
+                  ? {
+                      zIndex: 100 + idx,
+                      marginLeft: idx === 0 ? 0 : overlap,
+                    }
+                  : undefined
+              }
             >
-              {/* Node image on the line */}
-              <img
-                src={item.img}
-                alt={`${item.title} logo`}
-                className={[
-                  "absolute top-8 z-20 w-10 h-10 rounded-full object-cover bg-white border-2 border-primary -left-0",
-                  isLeft ? "lg:left-auto lg:right-[-20px]" : "lg:left-[-20px]",
-                ].join(" ")}
-              />
-
-              {/* Card */}
-              <div
-                className={[
-                  "relative rounded-md bg-gray-900 border-4 border-white p-5 text-gray-900 shadow",
-                  "transition-all duration-700",
-                  mounted
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 translate-y-8",
-                ].join(" ")}
-                style={{ transitionDelay: `${delay}ms` }}
-              >
-                {/* Arrow towards the timeline */}
-                <span className="lg:hidden absolute top-7 -left-[19px] border-y-[15px] border-y-transparent border-r-[15px] border-r-white" />
-                {isLeft ? (
-                  <span className="hidden lg:block absolute top-7 -right-[19px] border-y-[15px] border-y-transparent border-l-[15px] border-l-white" />
-                ) : (
-                  <span className="hidden lg:block absolute top-7 -left-[19px] border-y-[15px] border-y-transparent border-r-[15px] border-r-white" />
-                )}
-                <h2 className="text-xl sm:text-xl font-semibold text-white">
-                  {item.company}
-                </h2>
-                <h2 className="text-md sm:text-sm text-gray-300">
-                  {item.role}
-                </h2>
-                <small className="text-sm text-gray-500 mt-2">
-                  {item.date}
-                </small>
-                <p className="mt-4 text-gray-400">{item.desc}</p>
-                <div className="mt-4">
-                  <h5 className="font-medium text-white">Skills:</h5>
-                  <ul className="flex flex-wrap mt-2">
-                    {item?.skills?.map((skill, index) => (
-                      <li
-                        key={index}
-                        className="bg-[#8245ec] text-gray-300 px-4 py-1 text-xs sm:text-sm rounded-lg mr-2 mb-2 border border-gray-400"
-                      >
-                        {skill}
-                      </li>
-                    ))}
-                  </ul>
+              {isHorizontal ? null : (
+                <div className="absolute left-1/2 transform -translate-x-1/2 bg-gray-400 border-4 border-[#8245ec] w-12 h-12 sm:w-16 sm:h-16 rounded-full flex justify-center items-center z-10 p-1">
+                  <img
+                    src={item.img}
+                    alt={`${item.company || item.school} logo`}
+                    className="w-full h-full object-contain rounded-full"
+                  />
                 </div>
-              </div>
+              )}
+
+              {itemRenderer(item, idx, isLeft, delay)}
             </div>
           );
         })}

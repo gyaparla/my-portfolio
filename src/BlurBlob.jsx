@@ -22,7 +22,7 @@ const BlurBlob = ({ position, size }) => {
 };
 
 // Define prop types
-BlurBlob.PropTypes = {
+BlurBlob.propTypes = {
   position: PropTypes.shape({
     top: PropTypes.string,
     left: PropTypes.string,
@@ -32,4 +32,5 @@ BlurBlob.PropTypes = {
     height: PropTypes.string,
   }),
 };
+
 export default BlurBlob;

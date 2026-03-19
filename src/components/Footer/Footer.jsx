@@ -1,5 +1,5 @@
 import React from "react";
-import {FaLinkedin, FaGithub } from "react-icons/fa";
+import { FaLinkedin, FaGithub } from "react-icons/fa";
 
 const Footer = () => {
   // Smooth scroll function
@@ -11,10 +11,12 @@ const Footer = () => {
   };
 
   return (
-    <footer className="text-white py-8 px-[12vw] md:px-[7vw] lg:px-[20vw]">
+    <footer className="text-white py-8 px-[12vw] md:px-[7vw] lg:px-[12vw]">
       <div className="container mx-auto text-center">
         {/* Name / Logo */}
-        <h2 className="text-xl font-semibold text-purple-500">Gangadhara Reddy Yaparla</h2>
+        <h2 className="text-xl font-semibold text-purple-500">
+          Gangadhara Reddy Yaparla
+        </h2>
 
         {/* Navigation Links - Responsive */}
         <nav className="flex flex-wrap justify-center space-x-4 sm:space-x-6 mt-4">
@@ -22,7 +24,6 @@ const Footer = () => {
             { name: "About", id: "about" },
             { name: "Skills", id: "skills" },
             { name: "Experience", id: "experience" },
-            { name: "Projects", id: "projects" },
             { name: "Education", id: "education" },
           ].map((item, index) => (
             <button
@@ -39,8 +40,10 @@ const Footer = () => {
         <div className="flex flex-wrap justify-center space-x-4 mt-6">
           {[
             { icon: <FaGithub />, link: "https://github.com/gyaparla" },
-            { icon: <FaLinkedin />, link: "https://www.linkedin.com/in/gangadhara-yaparla/" },
-            
+            {
+              icon: <FaLinkedin />,
+              link: "https://www.linkedin.com/in/gangadhara-yaparla/",
+            },
           ].map((item, index) => (
             <a
               key={index}

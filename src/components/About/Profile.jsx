@@ -1,3 +1,5 @@
+// `motion` is used as a JSX component (motion.svg / motion.div)
+// eslint-disable-next-line no-unused-vars
 import { motion } from "framer-motion";
 import Tilt from "react-parallax-tilt";
 import Myphoto from "../../assets/profilePic.jpg";
@@ -7,7 +9,7 @@ const Profile = () => {
     <div className="relative flex items-center justify-center">
       {/* SVG Container */}
       <motion.svg
-        className="w-[300px] h-[300px] xl:w-[400px] xl:h-[400px]"
+        className="w-[70vw] max-w-[400px] max-h-[420px] aspect-square"
         fill="transparent"
         viewBox="0 0 506 506"
         xmlns="https://www.w3.org/2000/svg"
@@ -27,7 +29,7 @@ const Profile = () => {
             rotate: [120, 360],
           }}
           transition={{
-            duration: 20,
+            duration: 36,
             repeat: Infinity,
             repeatType: "reverse",
           }}
@@ -45,13 +47,14 @@ const Profile = () => {
         className="absolute"
       >
         <Tilt
-          className="w-[270px] h-[270px] xl:w-[350px] xl:h-[350px]"
-          tiltMaxAngleX={20}
-          tiltMaxAngleY={20}
+          className="w-[60vw] max-w-[350px] max-h-[420px] aspect-square"
+          tiltMaxAngleX={18}
+          tiltMaxAngleY={18}
           perspective={1000}
-          //   scale={1.05}
           transitionSpeed={1000}
           gyroscope={true}
+          tabIndex={0}
+          aria-label="Profile picture"
         >
           <img
             src={Myphoto}

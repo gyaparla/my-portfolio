@@ -8,49 +8,59 @@ const Contact = () => {
   const form = useRef();
   const [isSent, setIsSent] = useState(false);
 
+  const {
+    VITE_EMAILJS_SERVICE_ID,
+    VITE_EMAILJS_TEMPLATE_ID,
+    VITE_EMAILJS_PUBLIC_KEY,
+  } = import.meta.env;
+
   const sendEmail = (e) => {
     e.preventDefault();
 
-    emailjs
-      .sendForm(
-        "service_3qvu56w", // Replace with your EmailJS Service ID
-        "template_qlbwmh6", // Replace with your EmailJS Template ID
-        form.current,
-        "uzRcJdCtXiF5jo_14" // Replace with your EmailJS Public Key
-      )
-      .then(
-        () => {
-          setIsSent(true);
-          form.current.reset(); // Reset form fields after sending
-          toast.success("Message sent successfully! ✅", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            theme: "dark",
-          });
-        },
-        (error) => {
-          console.error("Error sending message:", error);
-          toast.error("Failed to send message. Please try again.", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            theme: "dark",
-          });
-        }
+    const serviceId = VITE_EMAILJS_SERVICE_ID || "service_3qvu56w";
+    const templateId = VITE_EMAILJS_TEMPLATE_ID || "template_qlbwmh6";
+    const publicKey = VITE_EMAILJS_PUBLIC_KEY || "uzRcJdCtXiF5jo_14";
+
+    if (!serviceId || !templateId || !publicKey) {
+      console.warn(
+        "EmailJS configuration is missing. Set VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID, and VITE_EMAILJS_PUBLIC_KEY in your .env file.",
       );
+    }
+
+    emailjs.sendForm(serviceId, templateId, form.current, publicKey).then(
+      () => {
+        setIsSent(true);
+        form.current.reset(); // Reset form fields after sending
+        toast.success("Message sent successfully! ✅", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "dark",
+        });
+        setTimeout(() => setIsSent(false), 4000);
+      },
+      (error) => {
+        console.error("Error sending message:", error);
+        toast.error("Failed to send message. Please try again.", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "dark",
+        });
+      },
+    );
   };
 
   return (
     <section
       id="contact"
-      className="flex flex-col items-center justify-center py-24 px-[12vw] md:px-[7vw] lg:px-[20vw]"
+      className="flex flex-col items-center justify-center py-24 px-[12vw] md:px-[7vw] lg:px-[12vw]"
     >
       {/* Toast Container */}
       <ToastContainer />
@@ -106,9 +116,10 @@ const Contact = () => {
           {/* Send Button */}
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-500 py-3 text-white font-semibold rounded-md hover:opacity-90 transition"
+            disabled={isSent}
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-500 py-3 text-white font-semibold rounded-md hover:opacity-90 transition disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Shoot
+            {isSent ? "Sent" : "Shoot"}
           </button>
         </form>
       </div>

@@ -6,8 +6,8 @@ const menuItems = [
   { id: "about", label: "About" },
   { id: "skills", label: "Skills" },
   { id: "experience", label: "Experience" },
-  { id: "projects", label: "Projects" },
   { id: "education", label: "Education" },
+  { id: "contact", label: "Contact" },
 ];
 
 const SocialIcons = () => (
@@ -45,37 +45,58 @@ const Navbar = () => {
     if (section) section.scrollIntoView({ behavior: "smooth" });
   }, []);
 
-useEffect(() => {
-  const throttle = (fn, limit) => {
-    let lastCall = 0;
-    return () => {
-      const now = new Date().getTime();
-      if (now - lastCall >= limit) {
-        lastCall = now;
-        fn();
-      }
+  useEffect(() => {
+    const throttle = (fn, limit) => {
+      let lastCall = 0;
+      return () => {
+        const now = new Date().getTime();
+        if (now - lastCall >= limit) {
+          lastCall = now;
+          fn();
+        }
+      };
     };
-  };
 
-  const handleScroll = throttle(() => {
-    setIsScrolled(window.scrollY > 50);
-  }, 100);
+    const handleScroll = throttle(() => {
+      setIsScrolled(window.scrollY > 50);
+    }, 100);
 
-  window.addEventListener("scroll", handleScroll);
-  return () => window.removeEventListener("scroll", handleScroll);
-}, []);
+    window.addEventListener("scroll", handleScroll);
 
+    const observerOptions = {
+      root: null,
+      rootMargin: "-40% 0px -55% 0px",
+      threshold: 0.3,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        setActiveSection(entry.target.id);
+      });
+    }, observerOptions);
+
+    menuItems.forEach(({ id }) => {
+      const section = document.getElementById(id);
+      if (section) observer.observe(section);
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      observer.disconnect();
+    };
+  }, []);
 
   return (
     <nav
       role="navigation"
-      className={`fixed top-0 w-full z-50 transition duration-300 px-[7vw] md:px-[7vw] lg:px-[20vw] ${
+      className={`fixed top-0 w-full z-50 transition duration-300 px-4 sm:px-6 md:px-[7vw] lg:px-[12vw] ${
         isScrolled
           ? "bg-[#050414] bg-opacity-50 backdrop-blur-md shadow-md"
           : "bg-transparent"
       }`}
     >
-      <div className="text-white py-5 flex justify-between items-center">
+      <div className="text-white py-4 flex justify-between items-center">
         {/* Logo */}
         <div
           className="text-lg font-semibold cursor-pointer hover:scale-105 transition-transform"
